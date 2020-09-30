@@ -1,0 +1,7 @@
+.well-known
+node_modules
+auth.js
+userId.js
+cert.pem
+chain.pem
+privkey.pem
