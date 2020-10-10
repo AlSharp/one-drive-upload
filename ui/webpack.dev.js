@@ -1,5 +1,6 @@
 const {merge} = require('webpack-merge');
 const common = require('./webpack.common');
+const DefinePlugin = require('webpack').DefinePlugin;
 const path = require('path');
 
 module.exports = merge(common, {
@@ -8,6 +9,13 @@ module.exports = merge(common, {
     contentBase: path.join(__dirname, "dist"),
     host: "0.0.0.0",
     port: 3000,
+    publicPath: '/',
+    historyApiFallback: true,
     disableHostCheck: true
-  }
+  },
+  plugins: [
+    new DefinePlugin({
+      PRODUCTION: false
+    })
+  ]
 })
