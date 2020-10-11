@@ -7,12 +7,7 @@ const app = express();
 const server = require('https').createServer({key, cert, ca}, app);
 
 const oneDriveMagic = require('./lib/onedrive');
-const fsMagic = require('./lib/fs');
 const sshMagic = require('./lib/ssh');
-
-const {
-  pathToBuilds
-} = require('./secrets/fs/paths');
 
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -61,22 +56,9 @@ app.get(PROTECTED_PATHS, jwtAuth(JWT_SECRET, authState), (req, res) => {
 
 app.get(UNPROTECTED_PATHS, (req, res) => {
   res.sendFile(__dirname + '/ui/dist/index.html');
-})
-
-app.get('/api/checkToken', jwtAuth(JWT_SECRET, authState), (req, res) => {
-  res.status(200).json({status: true});
 });
 
+require('./api/checkToken')(app, jwtAuth(JWT_SECRET, authState));
 require('./api/login')(app, JWT_SECRET, authState);
 require('./api/logout')(app, authState);
-
-app.get('/api/builds', async (req, res) => {
-  try {
-    const [folders, files] = await fsMagic.readDir(pathToBuilds);
-    res.status(200).json(folders);
-  }
-  catch(error) {
-    console.log(error);
-    res.status(500).end('I am sorry! Server error!');
-  }
-});
+require('./api/builds')(app, jwtAuth(JWT_SECRET, authState));

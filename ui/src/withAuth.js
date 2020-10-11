@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom';
-import {getURI} from './lib';
+import {getURI} from '@lib';
 
 export default function withAuth(ProtectedComponent) {
   return class extends Component {

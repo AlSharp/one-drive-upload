@@ -9,7 +9,6 @@ module.exports = merge(common, {
     contentBase: path.join(__dirname, "dist"),
     host: "0.0.0.0",
     port: 3000,
-    publicPath: '/',
     historyApiFallback: true,
     disableHostCheck: true
   },

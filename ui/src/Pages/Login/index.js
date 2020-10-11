@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
 import styled from 'styled-components';
 
-import {getURI} from '../../lib';
+import {getURI} from '@lib';
 
 const _Login = ({className, history, location, ...rest}) => {
   const [username, setUsername] = useState('');
