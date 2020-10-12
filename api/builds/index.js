@@ -1,7 +1,7 @@
-const fsMagic = require('../../lib/fs');
+const fsMagic = require('@lib/fs');
 const {
   pathToBuilds
-} = require('../../secrets/fs/paths');
+} = require('@secrets/fs/paths');
 
 module.exports = (app, jwtAuth) => {
   app.get('/api/builds', jwtAuth, async (req, res) => {
@@ -11,7 +11,7 @@ module.exports = (app, jwtAuth) => {
     }
     catch(error) {
       console.log(error);
-      res.status(500).end('I am sorry! Server error!');
+      res.status(200).json({error: 'Could not get list of builds'});
     }
   })
 }

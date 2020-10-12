@@ -1,3 +1,5 @@
+require('module-alias/register');
+
 const fs = require('fs');
 const key = fs.readFileSync('./keys/privkey.pem');
 const cert = fs.readFileSync('./keys/cert.pem');
@@ -5,9 +7,6 @@ const ca = fs.readFileSync('./keys/chain.pem');
 const express = require('express');
 const app = express();
 const server = require('https').createServer({key, cert, ca}, app);
-
-const oneDriveMagic = require('./lib/onedrive');
-const sshMagic = require('./lib/ssh');
 
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -21,6 +20,10 @@ const {
 } = require('./auth/config');
 
 const {jwtAuth} = require('./auth/middleware');
+
+const oneDriveMagic = require('@lib/onedrive');
+const {NodeSSH} = require('node-ssh');
+const ssh = new NodeSSH();
 
 const authState = {
   username: null
@@ -61,4 +64,8 @@ app.get(UNPROTECTED_PATHS, (req, res) => {
 require('./api/checkToken')(app, jwtAuth(JWT_SECRET, authState));
 require('./api/login')(app, JWT_SECRET, authState);
 require('./api/logout')(app, authState);
+
 require('./api/builds')(app, jwtAuth(JWT_SECRET, authState));
+require('./api/connectToImac')(app, jwtAuth(JWT_SECRET, authState), ssh);
+require('./api/disconnectFromImac')(app, jwtAuth(JWT_SECRET, authState), ssh);
+require('./api/upload')(app, jwtAuth(JWT_SECRET, authState), ssh);

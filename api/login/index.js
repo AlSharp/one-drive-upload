@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const {pathToCredentials} = require('../../secrets/fs/paths');
+const {pathToCredentials} = require('@secrets/fs/paths');
 
 
 

@@ -7,14 +7,18 @@ import Upload from './Upload';
 
 const _Body = ({className}) => {
   const [isConnected, setIsConnected] = useState(false);
+  const [isBuildSelected, setIsBuildSelected] = useState(false);
   return (
     <div className={className}>
-      <BuildsList />
+      <BuildsList
+        setIsBuildSelected={setIsBuildSelected}
+      />
       <ImacConnector
         isConnected={isConnected}
         setIsConnected={setIsConnected}
       />
       <Upload
+        isBuildSelected={isBuildSelected}
         isConnected={isConnected}
       />
     </div>

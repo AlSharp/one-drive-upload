@@ -3,13 +3,19 @@ import styled from 'styled-components';
 
 import {getURI} from '@lib';
 
-const _BuildsList = ({className}) => {
+const _BuildsList = ({className, setIsBuildSelected}) => {
   const isMounted = useRef(true);
   const [build, setBuild] = useState('');
   const [builds, setBuilds] = useState([]);
+  const [message, setMessage] = useState();
 
   const handleBuildSelect = event => {
     setBuild(event.target.value);
+    if (event.target.value.length) {
+      setIsBuildSelected(true);
+    } else {
+      setIsBuildSelected(false);
+    }
   }
 
   useEffect(() => {
@@ -21,14 +27,20 @@ const _BuildsList = ({className}) => {
   }, [builds]);
 
   async function fetchBuilds() {
-    const res = await fetch(`${getURI()}/api/builds`, {credentials: 'include'});
-    const {error, builds} = await res.json();
-    if (isMounted.current) {
-      if (error) {
-        setBuilds([]);
-      } else {
-        setBuilds(builds);
+    try {
+      const res = await fetch(`${getURI()}/api/builds`, {credentials: 'include'});
+      const {error, builds} = await res.json();
+      if (isMounted.current) {
+        if (error) {
+          setBuilds([]);
+          setMessage(error);
+        } else {
+          setBuilds(builds);
+        }
       }
+    }
+    catch(error) {
+      setMessage(error.message);
     }
   }
 
@@ -39,6 +51,7 @@ const _BuildsList = ({className}) => {
       </div>
       <div>
         <select
+          id="build-version"
           value={build}
           onChange={handleBuildSelect}
         >
@@ -50,6 +63,13 @@ const _BuildsList = ({className}) => {
           }
         </select>
       </div>
+      {
+        message ?
+        <div id="builds-message">
+          {message}
+        </div> :
+        null
+      }
     </div>
   )
 }

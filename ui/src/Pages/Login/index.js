@@ -18,33 +18,34 @@ const _Login = ({className, history, location, ...rest}) => {
     setPassword(event.target.value);
   }
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    fetch(`${getURI()}/api/login`, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({username, password}),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(async res => {
-        if (res.status === 200) {
-          setIsLoggedIn(true);
-          setMessage('Loading...');
-          setTimeout(() => {
-            history.push('/');
-          }, 1500);
-        } else if (res.status === 401) {
-          const json = await res.json();
-          setMessage(json.error);
-        } else {
-          throw new Error(res.error);
+  const handleSubmit = async event => {
+    try {
+      event.preventDefault();
+      const res = await fetch(`${getURI()}/api/login`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({username, password}),
+        headers: {
+          'Content-Type': 'application/json'
         }
-      })
-      .catch(error => {
-        console.log(error);
-      })
+      });
+  
+      if (res.status === 200) {
+        setIsLoggedIn(true);
+        setMessage('Loading...');
+        setTimeout(() => {
+          history.push('/');
+        }, 1500);
+      } else if (res.status === 401) {
+        const {error} = await res.json();
+        setMessage(error);
+      } else {
+        throw new Error(res.error);
+      }
+    }
+    catch(error) {
+      console.log(error);
+    }
   }
 
   return (
